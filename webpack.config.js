@@ -5,7 +5,7 @@ const HTMLWebpackPlugin = require("html-webpack-plugin");
 // 引入clean插件
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-// webpack中的所有的配置信息
+// webpack中的所有的配置信息都应该写在module.exports中
 module.exports = {
   // 指定入口文件
   entry: "./src/index.ts",
@@ -20,6 +20,7 @@ module.exports = {
     // 告诉webpack不使用箭头
     environment: {
       arrowFunction: false,
+      const: false,
     },
   },
 
@@ -63,6 +64,33 @@ module.exports = {
         ],
         // 要排除的文件
         exclude: /node-modules/,
+      },
+
+      // 设置less文件的处理
+      {
+        test: /\.less$/,
+        use: [
+          "style-loader",
+          "css-loader",
+
+          // 引入postcss
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: [
+                  [
+                    "postcss-preset-env",
+                    {
+                      browsers: "last 2 versions",
+                    },
+                  ],
+                ],
+              },
+            },
+          },
+          "less-loader",
+        ],
       },
     ],
   },
